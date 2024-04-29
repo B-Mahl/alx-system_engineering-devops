@@ -5,18 +5,26 @@
 apt-get update
 apt-get install -y nginx
 
-mkdir /etc/nginx/html
-touch /etc/nginx/html/index.html
+# Ensure the directory structure is set up
+mkdir -p /etc/nginx/html
+
+# Create a simple index.html for the root directory
 echo "Hello World!" > /etc/nginx/html/index.html
-printf %s "server {
-    listen 80;
+
+# Configure Nginx to handle the redirection
+cat <<EOF > /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
     listen [::]:80 default_server;
-    root   /etc/nginx/html;
-    index  index.html index.htm;
+    root /etc/nginx/html;
+    index index.html index.htm;
 
     location /redirect_me {
-        return 301 http://goal.com/en;
+        return 301 http://youtube.com/;
     }
-}" > /etc/nginx/sites-available/default
+}
+EOF
 
+# Restart Nginx to apply the changes
 service nginx restart
+
